@@ -2,6 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "options": { 
+        "env": { "workers:node:debug": "5858" } 
+      },
       "label": "Run Functions Host",
       "identifier": "runFunctionsHost",
       "type": "shell",
