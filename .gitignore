@@ -21,3 +21,8 @@ project.lock.json
 .secrets
 appsettings.json
 local.settings.json
+
+*.env
+*env.js
+
+/node_modules
