@@ -20,6 +20,27 @@ var databaseUrl = `dbs/${config.database.id}`;
 var collectionUrl = `${databaseUrl}/colls/${config.collection.id}`;
 var client = new documentClient(config.endpoint, { "masterKey": config.primaryKey });
 
+function stripInternalProperties(res) {
+
+    // strip off the internal documentDB properties
+    if(res.hasOwnProperty('_rid')){
+        delete res['_rid'];
+    }
+    if(res.hasOwnProperty('_self')){
+        delete res['_self'];
+    }
+    if(res.hasOwnProperty('_etag')){
+        delete res['_etag'];
+    }
+    if(res.hasOwnProperty('_attachments')){
+        delete res['_attachments'];
+    }
+    if(res.hasOwnProperty('_ts')){
+        delete res['_ts'];
+    }
+    return res;
+}
+
 module.exports = function (context, req) {
     context.log('JavaScript HTTP trigger function processed a request.');
 
@@ -31,16 +52,17 @@ module.exports = function (context, req) {
             ).toArray((err, results) => {
                 if (results.length==1){
                     // we found a matching review
+
                     context.res = {
                         // status: 200, /* Defaults to 200 */
-                        body: JSON.stringify(results[0])
+                        body: JSON.stringify(stripInternalProperties(results[0]))
                     };
                     context.done();
 
                 }
                 else {
                     context.res = {
-                        status: 400,
+                        status: 404,
                         body: "No review is found with ratingId "+req.query.ratingId
                     };
                     context.done();
